@@ -1,0 +1,47 @@
+name: Build & Release EstlcamEx
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    env:
+      PROJECT_PATH: src/EstlcamEx.csproj
+      CONFIGURATION: Release
+      OUTPUT_DIR: output
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"  # matches net8.0-windows
+
+      - name: Restore
+        run: dotnet restore $env:PROJECT_PATH
+
+      - name: Build
+        run: dotnet build $env:PROJECT_PATH --configuration $env:CONFIGURATION --no-restore
+
+      - name: Publish
+        run: dotnet publish $env:PROJECT_PATH -c $env:CONFIGURATION -o $env:OUTPUT_DIR
+
+      - name: List output
+        run: dir $env:OUTPUT_DIR
+
+      - name: Zip published output
+        run: Compress-Archive -Path "$env:OUTPUT_DIR\*" -DestinationPath "EstlcamEx-${{ github.ref_name }}.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: EstlcamEx ${{ github.ref_name }}
+          files: |
+            EstlcamEx-${{ github.ref_name }}.zip
