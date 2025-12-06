@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace EstlcamEx
 {
     public partial class SnapshotViewerForm : Form
     {
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         private readonly SnapshotManager snapshotManager;
         private readonly List<SnapshotInfo> allSnapshots;
         private List<SnapshotInfo> viewSnapshots;
@@ -310,6 +314,37 @@ namespace EstlcamEx
                 splitMain.SplitterDistance = totalWidth / 2;
             }
         }
+
+
+        public void BringToFrontAndFocus()
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                WindowState = FormWindowState.Normal;
+            }
+
+            // Make sure it's visible
+            if (!Visible)
+            {
+                Show();
+            }
+
+            // These three are often enough
+            BringToFront();
+            Activate();
+            Focus();
+
+            // Nudge Windows to make this the foreground window
+            try
+            {
+                SetForegroundWindow(this.Handle);
+            }
+            catch
+            {
+                // ignore; worst case the window is just brought to front without focus
+            }
+        }
+
 
         private void SplitMain_SplitterDoubleClick(object sender, EventArgs e)
         {

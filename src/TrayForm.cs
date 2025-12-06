@@ -8,6 +8,7 @@ namespace EstlcamEx
         private NotifyIcon trayIcon;
         private SnapshotManager snapshot;
         private KeyboardHook keyboard;
+        private SnapshotViewerForm _snapshotViewer;
 
         public TrayForm()
         {
@@ -40,8 +41,12 @@ namespace EstlcamEx
             //menu.Items.Add("Open Snapshots Folder", null, (_, __) => snapshot.OpenFolder());
             menu.Items.Add(new ToolStripMenuItem("Open Snapshot Viewer", null, (_, __) =>
             {
-                var viewer = new SnapshotViewerForm(snapshot);
-                viewer.Show();
+                if (_snapshotViewer == null || _snapshotViewer.IsDisposed)
+                {
+                    _snapshotViewer = new SnapshotViewerForm(snapshot);
+                }
+
+                _snapshotViewer.BringToFrontAndFocus();
             }));
             menu.Items.Add("Exit", null, (_, __) => Application.Exit());
 
@@ -65,10 +70,15 @@ namespace EstlcamEx
         {
             if (!EstlcamInterop.IsEstlcamForeground()) return;
 
+            // Must switch to UI thread to create/show forms
             this.BeginInvoke(new Action(() =>
             {
-                var viewer = new SnapshotViewerForm(snapshot);
-                viewer.Show();
+                if (_snapshotViewer == null || _snapshotViewer.IsDisposed)
+                {
+                    _snapshotViewer = new SnapshotViewerForm(snapshot);
+                }
+
+                _snapshotViewer.BringToFrontAndFocus();
             }));
         }
     }

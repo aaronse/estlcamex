@@ -63,7 +63,7 @@ namespace EstlcamEx
                 // Try to locate a running Estlcam process and get its executable path
                 foreach (var proc in Process.GetProcesses())
                 {
-                    if (!proc.ProcessName.Contains("estlcam", StringComparison.OrdinalIgnoreCase))
+                    if (!proc.ProcessName.Contains("estlcam1", StringComparison.OrdinalIgnoreCase))
                         continue;
 
                     try
