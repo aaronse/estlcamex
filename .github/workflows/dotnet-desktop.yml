@@ -99,8 +99,9 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref_name }}
-        name: EstlcamEx ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}.${{ github.run_number }}
+        name: EstlcamEx build ${{ github.run_number }} (branch ${{ github.ref_name }})
         files: |
           EstlcamEx-${{ github.ref_name }}.zip
+        prerelease: true
 
