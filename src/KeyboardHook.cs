@@ -10,6 +10,10 @@ namespace EstlcamEx
 
         public event Action CtrlZPressed;
         public event Action CtrlYPressed;
+        public event Action CtrlRPressed;
+
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_SYSKEYDOWN = 0x0104;
 
         public KeyboardHook()
         {
@@ -27,7 +31,7 @@ namespace EstlcamEx
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
+            if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
             {
                 int vkCode = Marshal.ReadInt32(lParam);
                 bool ctrl = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
@@ -43,9 +47,17 @@ namespace EstlcamEx
                     CtrlYPressed?.Invoke();
                     return (IntPtr)1;
                 }
+
+                if (ctrl && vkCode == (int)Keys.R)
+                {
+                    CtrlRPressed?.Invoke();
+                    return (IntPtr)1;
+                }
             }
+
             return CallNextHookEx(hookId, nCode, wParam, lParam);
         }
+
 
         public void Dispose() => UnhookWindowsHookEx(hookId);
 

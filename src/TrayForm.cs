@@ -31,13 +31,21 @@ namespace EstlcamEx
 
             keyboard.CtrlZPressed += OnUndo;
             keyboard.CtrlYPressed += OnRedo;
+            keyboard.CtrlRPressed += OnReviewSnapshots;
         }
 
         private ContextMenuStrip BuildMenu()
         {
             var menu = new ContextMenuStrip();
-            menu.Items.Add("Open Snapshots Folder", null, (_, __) => snapshot.OpenFolder());
+            //menu.Items.Add("Open Snapshots Folder", null, (_, __) => snapshot.OpenFolder());
+            menu.Items.Add(new ToolStripMenuItem("Open Snapshot Viewer", null, (_, __) =>
+            {
+                var viewer = new SnapshotViewerForm(snapshot);
+                viewer.Show();
+            }));
             menu.Items.Add("Exit", null, (_, __) => Application.Exit());
+
+
             return menu;
         }
 
@@ -51,6 +59,17 @@ namespace EstlcamEx
         {
             if (!EstlcamInterop.IsEstlcamForeground()) return;
             snapshot.Redo();
+        }
+
+        private void OnReviewSnapshots()
+        {
+            if (!EstlcamInterop.IsEstlcamForeground()) return;
+
+            this.BeginInvoke(new Action(() =>
+            {
+                var viewer = new SnapshotViewerForm(snapshot);
+                viewer.Show();
+            }));
         }
     }
 }

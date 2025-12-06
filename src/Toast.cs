@@ -5,7 +5,7 @@ namespace EstlcamEx
 {
     public static class Toast
     {
-        // Generic message-only toast (old behavior)
+        // Simple message-only toast (no file link)
         public static void Show(string message)
         {
             if (Application.OpenForms.Count > 0)
@@ -13,7 +13,8 @@ namespace EstlcamEx
                 var mainForm = Application.OpenForms[0];
                 mainForm.BeginInvoke(new Action(() =>
                 {
-                    var toast = new ToastForm(message, filePath: string.Empty, previewImagePath: null);
+                    // pass empty filePath so clicking does nothing
+                    var toast = new ToastForm(message, string.Empty, null);
                     toast.Show();
                 }));
             }

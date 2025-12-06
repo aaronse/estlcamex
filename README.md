@@ -4,6 +4,10 @@ EstlCamEx is a small .NET WinForms tray application that extends **Estlcam** wit
 
 The goal is to **provide helpful automation without modifying Estlcam itself**, respecting the author’s time, interests, and constraints.
 
+Related:
+- 2025/12/1 V1E Forum chat https://forum.v1e.com/t/no-undo/52182/11?u=azab2c
+- 2025/12/5 First brainstorm/ideation towards this mini project... https://chatgpt.com/c/693316bf-8d9c-8332-9239-d07b4a1e9cca
+
 ---
 
 ## ⭐ **Features**
